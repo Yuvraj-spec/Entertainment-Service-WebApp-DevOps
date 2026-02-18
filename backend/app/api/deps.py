@@ -1,6 +1,8 @@
-from app.db.session import SessionLocal
+from app.db.session import SessionLocal, engine
 from app.db.base import Base
-from app.db.session import engine
+
+# Import models here so they are registered
+from app.models import user, content
 
 Base.metadata.create_all(bind=engine)
 
