@@ -12,3 +12,10 @@ class UserResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+from pydantic import BaseModel
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+

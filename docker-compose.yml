@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: mysql:8
+    container_name: entertainment-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: entertainment
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: entertainment-backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: mysql+pymysql://root:1234@db:3306/entertainment
+      SECRET_KEY: 578306f501467076657ab81f73b0b9c4b192c879c2218a441cd30d9c2f8b9180
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: entertainment-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  mysql_data:
