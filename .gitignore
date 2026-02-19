@@ -1,17 +1,25 @@
-<<<<<<< HEAD
+
 # Python
 backend/venv/
 backend/__pycache__/
 backend/.env
+
 *.pyc
 
 # Node
 frontend/node_modules/
 
+backend/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+
 # OS
 .DS_Store
 Thumbs.db
-=======
+
 # Backend virtual environment
 backend/venv/
 
@@ -31,4 +39,4 @@ __pycache__/
 
 frontend/
 backend/.dockerignore
->>>>>>> backend
+
