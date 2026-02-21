@@ -3,40 +3,45 @@ import { loginUser } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await loginUser(form);
+      const res = await loginUser({ email, password });
+
       localStorage.setItem("token", res.data.access_token);
+
+      alert("Login successful");
       navigate("/dashboard");
-    } catch (error) {
-      alert("Invalid credentials");
+    } catch (err) {
+      alert(err.response?.data?.detail || "Login failed");
     }
   };
 
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Email"
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button type="submit">Login</button>
+    </form>
   );
 }
 

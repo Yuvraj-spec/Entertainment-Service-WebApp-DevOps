@@ -5,5 +5,8 @@ export const registerUser = (data) => {
 };
 
 export const loginUser = (data) => {
-  return api.post("/login/", data);
+  return api.post("/users/login/", {
+    ...data,
+    email: data.email.trim(), // removes accidental spaces
+  });
 };

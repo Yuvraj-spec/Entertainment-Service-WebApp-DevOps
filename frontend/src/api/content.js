@@ -1,9 +1,8 @@
 import api from "./axios";
 
-export const createContent = (data) => {
-  return api.post("/content/", data);
-};
+export const createContent = (data) => api.post("/content/", data);
 
-export const getAllContent = () => {
-  return api.get("/content/");
-};
+// ✅ Search + filter (both optional)
+export const getAllContent = (params = {}) => api.get("/content/", { params });
+
+getAllContent({ q: "avengers", content_type: "movie" })

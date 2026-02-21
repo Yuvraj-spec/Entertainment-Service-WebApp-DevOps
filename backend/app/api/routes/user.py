@@ -12,21 +12,19 @@ router = APIRouter(prefix="/users", tags=["Users"])
 def register(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
-@router.post("/login/")
+from app.schemas.token import TokenResponse
+
+@router.post("/login/", response_model=TokenResponse)
 def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = db.query(User).filter(User.email == user.email).first()
 
-    print("Input email:", user.email)
-    print("User found:", db_user)
+    if not db_user or not verify_password(user.password, db_user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    if not db_user:
-        raise HTTPException(status_code=400, detail="Invalid credentials")
+    access_token = create_access_token({"sub": db_user.email})
 
-    print("Stored hash:", db_user.password_hash)
-
-    if not verify_password(user.password, db_user.password_hash):
-        print("Password verification failed")
-        raise HTTPException(status_code=400, detail="Invalid credentials")
-
-    return {"message": "Login success"}
-
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "message": "Login success"
+    }
