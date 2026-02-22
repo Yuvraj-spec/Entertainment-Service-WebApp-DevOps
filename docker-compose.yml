@@ -1,7 +1,4 @@
-version: "3.9"
-
 services:
-
   db:
     image: mysql:8
     container_name: entertainment-mysql
@@ -13,13 +10,20 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p1234 --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
 
   backend:
     build: ./backend
     container_name: entertainment-backend
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DATABASE_URL: mysql+pymysql://root:1234@db:3306/entertainment
       SECRET_KEY: 578306f501467076657ab81f73b0b9c4b192c879c2218a441cd30d9c2f8b9180
@@ -33,7 +37,8 @@ services:
     container_name: entertainment-frontend
     restart: always
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     ports:
       - "3000:80"
 
